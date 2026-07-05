@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PWS</title>
+<style>
+:root{
+  --bg:#0d0d0d;
+  --s1:#161616;
+  --s2:#1f1f1f;
+  --br:#2a2a2a;
+  --g:#39d353;
+  --gd:rgba(57,211,83,.12);
+  --gd2:rgba(57,211,83,.06);
+  --am:#f0a500;
+  --tx:#d4d4d4;
+  --txd:#5a5a5a;
+  --r:8px;
+  --f:'Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--f);font-size:13px;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-bottom:1px solid var(--br);background:var(--s1);position:sticky;top:0;z-index:10}
+.logo{font-size:1rem;font-weight:700;color:var(--g);letter-spacing:.1em}
+.logo span{color:var(--txd);font-weight:400}
+#hd-time{color:var(--txd);font-size:.75rem}
+main{padding:.75rem;display:grid;gap:.75rem;max-width:900px;margin:0 auto}
+.card{background:var(--s1);border:1px solid var(--br);border-radius:var(--r);overflow:hidden}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;border-bottom:1px solid var(--br);background:var(--s2)}
+.card-hd h2{font-size:.65rem;letter-spacing:.15em;color:var(--txd);text-transform:uppercase}
+.badge{font-size:.6rem;padding:.15rem .4rem;border-radius:3px;border:1px solid;line-height:1.4}
+.badge-g{color:var(--g);border-color:rgba(57,211,83,.3);background:var(--gd2)}
+.badge-a{color:var(--am);border-color:rgba(240,165,0,.3);background:rgba(240,165,0,.06)}
+.card-body{padding:.75rem}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.stat{background:var(--s2);border:1px solid var(--br);border-radius:6px;padding:.6rem .75rem}
+.stat-l{font-size:.55rem;color:var(--txd);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem}
+.stat-v{font-size:1.1rem;color:var(--g);font-weight:700;line-height:1}
+.stat-u{font-size:.6rem;color:var(--txd);margin-left:1px}
+@media(max-width:480px){.stat-row{grid-template-columns:1fr 1fr}}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.75rem}
+th{padding:.4rem .6rem;text-align:left;color:var(--txd);font-weight:400;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;background:var(--s2);border-bottom:1px solid var(--br)}
+td{padding:.45rem .6rem;border-top:1px solid var(--br);white-space:nowrap}
+tbody tr:first-child td{color:var(--g)}
+tbody tr:hover{background:var(--s2)}
+.pump-on{color:var(--g)}
+.pump-off{color:var(--txd)}
+.no-data{text-align:center;padding:2rem;color:var(--txd)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem}
+label{display:block;font-size:.6rem;color:var(--txd);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem}
+input[type=number]{width:100%;background:var(--s2);border:1px solid var(--br);border-radius:5px;color:var(--tx);font-family:var(--f);font-size:.85rem;padding:.45rem .6rem;outline:none;-webkit-appearance:none;transition:border-color .2s}
+input[type=number]:focus{border-color:var(--g)}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+
+/* Range/Slider custom styling per integrarsi con la dark mode */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  background: var(--br);
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--g);
+  cursor: pointer;
+  box-shadow: 0 0 5px var(--g);
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+.btn{width:100%;padding:.55rem;background:var(--gd);border:1px solid rgba(57,211,83,.25);border-radius:5px;color:var(--g);font-family:var(--f);font-size:.7rem;letter-spacing:.08em;cursor:pointer;transition:all .15s;outline:none;text-transform:uppercase}
+.btn:hover{background:rgba(57,211,83,.2);border-color:var(--g)}
+.btn:active{transform:scale(.98)}
+.btn-am{background:rgba(240,165,0,.1);border-color:rgba(240,165,0,.25);color:var(--am)}
+.btn-am:hover{background:rgba(240,165,0,.18);border-color:var(--am)}
+.sep{height:1px;background:var(--br);margin:.6rem 0}
+.mt{margin-top:.5rem}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g);box-shadow:0 0 5px var(--g);animation:blink 2s ease-in-out infinite;margin-right:.3rem}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.toast{position:fixed;bottom:1rem;right:1rem;background:var(--s2);border:1px solid var(--g);border-radius:6px;padding:.5rem .9rem;font-size:.75rem;color:var(--g);transform:translateY(60px);opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);z-index:99;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.next-info{margin-top:.5rem;padding:.4rem .6rem;background:var(--s2);border-radius:5px;border-left:2px solid var(--g);font-size:.65rem;color:var(--txd)}
+.next-info span{color:var(--g)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PWS<span>/monitor</span></div>
+  <div id="hd-time">--:--:--</div>
+</header>
+
+<main>
+  <div class="card">
+    <div class="card-hd">
+      <h2>controllo</h2>
+      <span class="badge badge-g">MANUAL</span>
+    </div>
+    <div class="card-body">
+      <div class="stat-row">
+        <div class="stat" style="grid-column:span 2">
+          <div class="stat-l">UMIDITÀ SUOLO</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.4rem">
+            <div>
+              <div style="font-size:.55rem;color:var(--txd);margin-bottom:.2rem">MIN %</div>
+              <input type="number" id="soil-target-low" min="0" max="100" value="40" style="width:100%">
+            </div>
+            <div>
+              <div style="font-size:.55rem;color:var(--txd);margin-bottom:.2rem">MAX %</div>
+              <input type="number" id="soil-target-high" min="0" max="100" value="70" style="width:100%">
+            </div>
+          </div>
+          <button class="btn mt" style="padding:.3rem" onclick="saveTarget()">SET</button>
+        </div>
+        <div class="stat" style="grid-column:span 2">
+          <div class="stat-l">POMPA MANUALE</div>
+          <div style="display:flex;gap:.5rem;margin-top:.4rem">
+            <button class="btn" style="padding:.35rem 0" onclick="setPump(true)">ON</button>
+            <button class="btn btn-am" style="padding:.35rem 0" onclick="setPump(false)">OFF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">
+      <h2>ultime misurazioni</h2>
+      <span class="badge badge-g" id="rec-count">-- rec</span>
+    </div>
+    <div class="card-body" style="padding:0">
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ORA</th>
+              <th>TEMP</th>
+              <th>UM.ARIA</th>
+              <th>UM.SUOLO</th>
+              <th>POMPA</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body">
+            <tr><td colspan="6" class="no-data">caricamento...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">
+      <h2>pianificazione</h2>
+      <span class="badge badge-a">CRON</span>
+    </div>
+    <div class="card-body">
+      <label>sincronizza ora dispositivo</label>
+      <button class="btn btn-am mt" onclick="syncTime()">SYNC ORA DA BROWSER</button>
+      <div class="sep"></div>
+      <label>Tempo tra letture</label>
+      <div class="row mt">
+        <div>
+          <label>ORA</label>
+          <input type="number" id="al-h" min="0" max="23" value="8">
+        </div>
+        <div>
+          <label>MINUTO</label>
+          <input type="number" id="al-m" min="0" max="59" value="0">
+        </div>
+      </div>
+      <button class="btn" onclick="saveAlarm()">IMPOSTA ALLARME</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd">
+      <h2>esporta dati</h2>
+      <span class="badge badge-g">CSV</span>
+    </div>
+    <div class="card-body">
+      <label>scarica l'intero database delle misurazioni</label>
+      <button class="btn mt" onclick="downloadCSV()">DOWNLOAD CSV</button>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function tick(){const n=new Date(),p=x=>String(x).padStart(2,'0');document.getElementById('hd-time').textContent=p(n.getHours())+':'+p(n.getMinutes())+':'+p(n.getSeconds());}
+setInterval(tick,1000);tick();
+
+function toast(msg,ms=2200){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),ms);}
+
+async function fetchData(){
+  try{
+    const r=await fetch('/data');if(!r.ok)return;
+    const d=await r.json();
+    renderTable(d.readings||[]);
+    document.getElementById('rec-count').textContent=(d.readings||[]).length+' rec';
+  }catch(e){}
+}
+
+// funzione scritta da me per leggere i valori di target umidita e la pianificazione dell'allarme
+async function updateControlParms() {
+  const result = await fetch('/updateConfigParms');
+  const json = await result.json();
+
+  document.getElementById('soil-target-low').value = json.TargetHumLow;
+  document.getElementById('soil-target-high').value = json.TargetHumHigh;
+  document.getElementById('al-h').value = json.AlarmHours;
+  document.getElementById('al-m').value = json.AlarmMinutes;
+}
+
+function renderTable(rows){
+  const tb=document.getElementById('tbl-body');
+  if(!rows.length){tb.innerHTML='<tr><td colspan="6" class="no-data">nessuna misurazione</td></tr>';return;}
+  try {
+    tb.innerHTML=rows.map(r=>{
+      const d=new Date(r.timestamp*1000),p=x=>String(x).padStart(2,'0');
+      const ts=p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+':'+p(d.getMinutes());
+      return`<tr><td>${r.id}</td><td>${ts}</td><td>${r.temp!==null?r.temp.toFixed(1):'--'} °C</td><td>${r.humA!==null?r.humA.toFixed(1):'--'} %</td><td>${r.humS!==null?r.humS.toFixed(1):'--'} %</td><td>${r.pump?'<span class="pump-on">ON</span>':'<span class="pump-off">OFF</span>'}</td></tr>`;
+    }).join('');
+  } catch(e) {
+    toast('Errore rendering: '+e.message);
+  }
+}
+
+async function post(url,body){try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return r.ok;}catch(e){return false;}}
+
+async function saveTarget(){
+  const lo=parseInt(document.getElementById('soil-target-low').value);
+  const hi=parseInt(document.getElementById('soil-target-high').value);
+  if(isNaN(lo)||lo<0||lo>100||isNaN(hi)||hi<0||hi>100){toast('⚠ valori non validi');return;}
+  if(lo>=hi){toast('⚠ min deve essere minore di max');return;}
+  const ok=await post('/control/target',{soilTargetLow:lo,soilTargetHigh:hi});
+  toast(ok?'✓ target '+lo+'% - '+hi+'%':'⚠ non raggiungibile');
+}
+
+async function setPump(on){
+  const ok=await post('/control/pump',{on:on});
+  toast(ok?'✓ pompa '+(on?'accesa':'spenta'):'⚠ non raggiungibile');
+}
+
+
+async function syncTime(){
+  const n=new Date(),p=x=>String(x).padStart(2,'0');
+  const ok=await post('/config/time',{year:n.getFullYear(),month:n.getMonth()+1,day:n.getDate(),hour:n.getHours(),minute:n.getMinutes(),second:n.getSeconds()});
+  toast(ok?'✓ ora sincronizzata '+p(n.getHours())+':'+p(n.getMinutes()):'⚠ non raggiungibile');
+}
+
+async function saveAlarm(){
+  const h=parseInt(document.getElementById('al-h').value),m=parseInt(document.getElementById('al-m').value);
+  if(isNaN(h)||h<0||h>23||isNaN(m)||m<0||m>59){toast('⚠ valori non validi');return;}
+  const ok=await post('/config/alarm',{hour:h,minute:m});
+  const p=x=>String(x).padStart(2,'0');
+  toast(ok?'✓ allarme '+p(h)+':'+p(m):'⚠ non raggiungibile');
+  document.getElementById('next-info').innerHTML='prossima lettura: <span>'+p(h)+':'+p(m)+'</span>';
+}
+
+async function saveCfg(){
+  const cy=parseInt(document.getElementById('cfg-cy').value),iv=parseInt(document.getElementById('cfg-iv').value);
+  const ok=await post('/config/sampling',{cycles:cy,interval:iv});
+  toast(ok?'✓ config salvata':'⚠ non raggiungibile');
+}
+
+function downloadCSV(){
+  window.open('/csv', '_blank');
+}
+
+fetchData();
+updateControlParms();
+setInterval(fetchData,15000);
+</script>
+</body>
+</html>
